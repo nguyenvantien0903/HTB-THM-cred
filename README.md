@@ -1,1 +1,1 @@
-# HTB-cred
+# HTB-THM-credentials
