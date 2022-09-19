@@ -179,3 +179,7 @@ WINDOWWWW
 
 #trick 
 	Get-ChildItem -PATH C:\Users\.. -Recurse
+#bypass the execution policy restriction to run PrivescCheck https://github.com/itm4n/PrivescCheck
+	PS C:\> Set-ExecutionPolicy Bypass -Scope process -Force
+	PS C:\> . .\PrivescCheck.ps1
+	PS C:\> Invoke-PrivescCheck
